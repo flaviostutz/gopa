@@ -1,29 +1,22 @@
-#FROM golang:1.10
-FROM alpine:3.7
-
+FROM ubuntu:18.04 as BUILD
 WORKDIR /gopa
-
-#RUN apt-get update &&\
-#    apt-get install git make
-RUN apk update &&\
-    apk add wget tar git
-
-#RUN wget https://github.com/infinitbyte/gopa-snapshot/archive/0.11.0_SNAPSHOT.tar.gz -O source.tar.gz
-#RUN git clone https://github.com/infinitbyte/gopa.git &&\
-#    cd gopa &&\
-#    git checkout v0.10.0
-
-#RUN go get -u github.com/golang/dep/cmd/dep
-#RUN dep ensure --add github.com/infinitbyte/gopa.git@v0.10.0
-#RUN go get -v github.com/infinitbyte/gopa
-#RUN make all
-
-#RUN wget https://github.com/infinitbyte/gopa/releases/download/v0.10.0/GOPA-0.10.0-darwin64.tar.gz -O gopa.tar.gz
+RUN apt-get update &&\
+    apt-get install -y tar wget
 RUN wget https://github.com/infinitbyte/gopa/releases/download/v0.10.0/GOPA-0.10.0-linux64.tar.gz -O gopa.tar.gz
 RUN tar vxzf gopa.tar.gz
+RUN rm gopa.tar.gz
 
+
+FROM golang:1.10
+ENV ELASTICSEARCH_SCHEME http
+ENV ELASTICSEARCH_HOST elasticsearch
+ENV ELASTICSEARCH_PORT 9200
+ENV ELASTICSEARCH_USERNAME admin
+ENV ELASTICSEARCH_PASSWORD admin
+WORKDIR /gopa
+COPY --from=BUILD /gopa /gopa
+ADD gopa.yml /gopa/
+ADD startup.sh /gopa/startup.sh
 EXPOSE 9001 8001 13001 8125 9223
 
-#CMD [ "/gopa/gopa-darwin64" ]
-CMD [ "/gopa/gopa-linux64" ]
-
+CMD [ "/gopa/startup.sh" ]
