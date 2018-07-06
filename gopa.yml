@@ -6,10 +6,10 @@ path.data: data
 path.logs: log
 path.certs: cert
 
-cookie_secret: <GOPA-SECRET>
+cookie_secret: <COOKIE_SECRET>
 
 allow_multi_instance: true
-max_num_of_instances: 5
+max_num_of_instances: <NUMBER_OF_CRAWLER_INSTANCES>
 
 tls_enabled: false
 
@@ -278,6 +278,7 @@ modules:
         end:
           joint: save_task
           enabled: true
+          
 - name: cluster
   enabled: true
 

@@ -13,10 +13,13 @@ ENV ELASTICSEARCH_HOST elasticsearch
 ENV ELASTICSEARCH_PORT 9200
 ENV ELASTICSEARCH_USERNAME admin
 ENV ELASTICSEARCH_PASSWORD admin
+ENV NUMBER_OF_CRAWLER_INSTANCES 5
+ENV COOKIE_SECRET abc
 WORKDIR /gopa
 COPY --from=BUILD /gopa /gopa
 ADD gopa.yml /gopa/
 ADD startup.sh /gopa/startup.sh
+RUN chmod +x /gopa/config/elasticsearch/gopa-index-mapping.sh
 EXPOSE 9001 8001 13001 8125 9223
 
 CMD [ "/gopa/startup.sh" ]
